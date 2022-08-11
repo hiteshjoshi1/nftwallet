@@ -17,9 +17,13 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
+
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { BarCodeReadEvent, RNCamera } from 'react-native-camera';
 
 import {
   Colors,
@@ -29,7 +33,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { CustomWalletConnect } from './utils/walletconnect';
-import WebviewCrypto from 'react-native-webview-crypto'
+
+
+
 
 const Section: React.FC<
   PropsWithChildren<{
@@ -62,10 +68,17 @@ const Section: React.FC<
 };
 
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  
 
+
+
+const App = () => {
+  
+  
+  const onSuccess = ((e:BarCodeReadEvent) => {
+    console.log(e);
+  })
+  
+  const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -82,6 +95,22 @@ const App = () => {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
       <Header />
+      <QRCodeScanner
+        onRead={onSuccess}
+        flashMode={RNCamera.Constants.FlashMode.torch}
+        topContent={
+          <Text style={styles.centerText}>
+            Go to{' '}
+            <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
+            your computer and scan the QR code.
+          </Text>
+        }
+        bottomContent={
+          <TouchableOpacity style={styles.buttonTouchable}>
+            <Text style={styles.buttonText}>OK. Got it!</Text>
+          </TouchableOpacity>
+        }
+      />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -121,8 +150,6 @@ export const WalletConnectContext = React.createContext<WalletConnectStateType>(
 
 
 
-
-
 const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
@@ -139,6 +166,23 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  centerText: {
+    flex: 1,
+    fontSize: 18,
+    padding: 32,
+    color: '#777'
+  },
+  textBold: {
+    fontWeight: '500',
+    color: '#000'
+  },
+  buttonText: {
+    fontSize: 21,
+    color: 'rgb(0,122,255)'
+  },
+  buttonTouchable: {
+    padding: 16
   },
 });
 
