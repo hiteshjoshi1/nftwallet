@@ -12,6 +12,7 @@ import React, {type PropsWithChildren, useState} from 'react';
 
 
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -24,6 +25,9 @@ import {
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera';
+import { useWcDisconnect } from './utils/walletconnect/onWcDisconnect';
+// import { useNavigation } from '@react-navigation/native';
+import WebviewCrypto from 'react-native-webview-crypto'
 
 import {
   Colors,
@@ -32,7 +36,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import { CustomWalletConnect } from './utils/walletconnect';
+import { createNewWcConnector, CustomWalletConnect, registerWalletConnectListeners } from './utils/walletconnect';
 
 
 
@@ -74,22 +78,47 @@ const Section: React.FC<
 const App = () => {
   
   
-  const onSuccess = ((e:BarCodeReadEvent) => {
-    console.log(e);
-  })
+  // const onSuccess = ((e:BarCodeReadEvent) => {
+  //   console.log(e.data);
+  // })
+  const [showQrCode, setShowQrCode] = useState(false)
+  const { onWcDisconnect } = useWcDisconnect()
+  // const navigation = useNavigation()
+
+  
+  // const { onWcTimestampUpdate } = useWcTimestampUpdate()
+
+  const [walletConnectList, setWalletConnectList] = useState<CustomWalletConnect[]>([])
+  const value = { walletConnectList, setWalletConnectList }
+
+  const onSuccess = (data: any) => {
+    if (data) {
+     
+      const wcString = data.data
+      console.log(wcString)
+      if (wcString.length > 3 && wcString.substring(0, 3) === 'wc:') {
+        const _wcSession = createNewWcConnector(wcString)
+        walletConnectList?.length
+          ? setWalletConnectList([...walletConnectList, _wcSession])
+          : setWalletConnectList([_wcSession])
+        registerWalletConnectListeners(_wcSession, onWcDisconnect)
+      } else {
+        Alert.alert('FAIL', 'INVALID_DATA')
+      }
+    }
+  }
   
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const [walletConnectList, setWalletConnectList] = useState<CustomWalletConnect[]>([])
-  const value = { walletConnectList, setWalletConnectList }
+
 
   return (
     <SafeAreaView style={backgroundStyle}>
     <WalletConnectContext.Provider value={value}>
-    
+    <WebviewCrypto />
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -111,24 +140,7 @@ const App = () => {
           </TouchableOpacity>
         }
       />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-          Test this is working, is it working
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View> 
+     
       </ScrollView>
       </WalletConnectContext.Provider>
     </SafeAreaView>
