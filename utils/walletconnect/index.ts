@@ -53,7 +53,6 @@ export class CustomWalletConnect extends WalletConnectDefault {
 }
 
 export const createNewWcConnector = (wcString: string): CustomWalletConnect => {
-    console.log('in create conn')
   const wcSession: CustomWalletConnect = new CustomWalletConnect({
     uri: wcString
 

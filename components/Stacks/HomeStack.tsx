@@ -12,7 +12,7 @@ export const  HomeStackScreen =() => {
    <HomeStack.Navigator>
     <HomeStack.Screen name="Home" component={HomeScreen} />       
     <HomeStack.Screen name="Contact" component={ContactScreen} />
-    <HomeStack.Screen name="QR"  key="QR" component={QRScanScreen} />
+    <HomeStack.Screen name="QR"  component={QRScanScreen} />
    </HomeStack.Navigator>
   );
 }

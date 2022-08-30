@@ -7,8 +7,7 @@ import WebviewCrypto from 'react-native-webview-crypto'
 import { CustomWalletConnect } from './utils/walletconnect';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppScreens } from './navigation/AppScreens';
-import { HomeScreen } from './components/HomeScreen';
-import { ContactScreen } from './components/ContactScreen';
+
 
 
 
