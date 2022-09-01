@@ -76,9 +76,6 @@ const WalletConnectEvents  = ({route}:any) => {
       StackActions.push(HOME_SCREEN ),
     )
 
-    // if (wcSession?.peerMeta?.icons?.[1] !== 'PREVENT_NAVIGATION') {
-    //   goBack()
-    // }
   }
 
   const rejectSession = () => {
