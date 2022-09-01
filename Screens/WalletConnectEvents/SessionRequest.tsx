@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { LogBox, Text, TouchableOpacity, View, Image } from 'react-native'
 import { CealLogo } from '../../assets/images'
+import { AppButton } from '../components/AppButton'
 
 
 
@@ -77,15 +78,19 @@ export const SessionRequest: FC<Props> = ({
         </Text>
 
         <View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={rejectSession}>
             <Text>Cancel</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+            <AppButton title="Cancel" onPress={rejectSession}/>
+
           <View/>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={approveSession}>
             <Text>Connect</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+         <AppButton title="Connect" onPress={approveSession}/>   
+
         </View>
       </View>
     </View>

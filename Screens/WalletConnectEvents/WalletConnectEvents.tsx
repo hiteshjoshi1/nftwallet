@@ -3,14 +3,14 @@ import React, { FC, useContext } from 'react'
 import { LogBox, View } from 'react-native'
 
 
-import { useNavigation } from '@react-navigation/native'
+import { StackActions, useNavigation } from '@react-navigation/native'
 
 
 import dayjs from 'dayjs'
 
 import type WalletConnect from '@walletconnect/client'
 import { WalletConnectContext } from '../../utils'
-import { LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT } from '../../constants'
+import { HOME_SCREEN, LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT } from '../../constants'
 import { Wallet } from 'ethers'
 import { SessionRequest } from './SessionRequest'
 
@@ -31,8 +31,8 @@ const WalletConnectEvents  = ({route}:any) => {
   const navigation = useNavigation()
   const { walletConnectList, setWalletConnectList } = useContext(WalletConnectContext)
   
-  const { eventType, payload, wallet } = route.params
-  const wcSession = route.params.wcSession
+  const { eventType, payload, address } = route.params
+  const wcSession:WalletConnect = route.params.wcSession
 
   const date = dayjs().format('DD MMM YYYY')
   const time = dayjs().format('hh:mm A')
@@ -41,8 +41,9 @@ const WalletConnectEvents  = ({route}:any) => {
     navigation.goBack()
   }
 
-  const approveSession = async () => {
-    const accounts = [wallet.address|| '']
+  const acceptSession = async () => {
+    const accounts = [address|| '']
+    
     const chainId = 4
 
     wcSession.approveSession({
@@ -70,10 +71,14 @@ const WalletConnectEvents  = ({route}:any) => {
     //   updatedAt: new Date(),
     //   id: wcSession.clientId,
     // })
+    
+    navigation.dispatch(
+      StackActions.push(HOME_SCREEN ),
+    )
 
-    if (wcSession?.peerMeta?.icons?.[1] !== 'PREVENT_NAVIGATION') {
-      goBack()
-    }
+    // if (wcSession?.peerMeta?.icons?.[1] !== 'PREVENT_NAVIGATION') {
+    //   goBack()
+    // }
   }
 
   const rejectSession = () => {
@@ -109,7 +114,7 @@ const WalletConnectEvents  = ({route}:any) => {
           date={date}
           time={time}
           payload={payload}
-          approveSession={approveSession}
+          approveSession={acceptSession}
           rejectSession={rejectSession}
         />
       )}

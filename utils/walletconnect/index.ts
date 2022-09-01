@@ -105,7 +105,7 @@ export const registerWalletConnectListeners = async (
         throw error
       }
       navigation.dispatch(
-        StackActions.push('WalletConnectEvents', {
+        StackActions.push(WC_SCREEN, {
           payload,
           eventType: CALL_REQUEST,
           wcSession: walletConnectItem,
