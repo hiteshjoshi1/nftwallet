@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 
 import React from 'react';
 
-import { AboutScreen } from "../components/AboutScreen";
-import { HomeStackScreen } from "../components/Stacks/HomeStack";
+import { AboutScreen } from "../Screens/AboutScreen";
+import { HomeStackScreen } from "../Screens/Stacks/HomeStack";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import "react-native-get-random-values"
 import "@ethersproject/shims"
-import { Wallet, ethers } from 'ethers';
+import { Wallet } from 'ethers';
 import { EtherWalletProvider } from '../context/Etherwallet';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 

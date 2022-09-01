@@ -6,34 +6,36 @@ import {
   DISCONNECT,
   FAIL,
   SESSION_REQUEST_EVENT,
-  SESSION_UPDATE_EVENT
+  WC_SCREEN,
 } from '../../constants'
 
+import { CealLogo } from '../../assets/images'
+import { Wallet } from 'ethers'
 import { StackActions } from '@react-navigation/native'
+import WalletConnectEvents from '../../Screens/WalletConnectEvents/WalletConnectEvents'
 
 // import { useWalletConnectStoreService } from '@hooks/authentication'
 
 // import { LocalVCRequestStore } from '@services/VCRequestStore/LocalVCRequestStore'
 
 // export const useWcTimestampUpdate = () => {
-// //   const { localWalletConnectStore } = useWalletConnectStoreService()
+//   // const { localWalletConnectStore } = useWalletConnectStoreService()
 
 //   const onWcTimestampUpdate = async (wcSession: CustomWalletConnect) => {
-// //     try {
-// //       const localStoreItem = await localWalletConnectStore.getById(wcSession.clientId)
+//     try {
+//       // const localStoreItem = await localWalletConnectStore.getById(wcSession.clientId)
 
-// //       if (localStoreItem && localStoreItem.id) {
-// //         localWalletConnectStore.update(localStoreItem.id, { updatedAt: wcSession.lastUpdated })
-// //       }
-// //     } catch (e) {}
-// //   }
+//       if (localStoreItem && localStoreItem.id) {
+//         localWalletConnectStore.update(localStoreItem.id, { updatedAt: wcSession.lastUpdated })
+//       }
+//     } catch (e) {}
+//   }
 
-// //   return { onWcTimestampUpdate }
-  
+//   return { onWcTimestampUpdate }
 // }
 
 export class CustomWalletConnect extends WalletConnectDefault {
-  private _lastUpdated: Date = new Date() ;
+  private _lastUpdated: Date = new Date();
 
   constructor(connectorOpts: IWalletConnectOptions, pushServerOpts?: IPushServerOptions) {
     super(connectorOpts, pushServerOpts)
@@ -54,89 +56,68 @@ export class CustomWalletConnect extends WalletConnectDefault {
 
 export const createNewWcConnector = (wcString: string): CustomWalletConnect => {
   const wcSession: CustomWalletConnect = new CustomWalletConnect({
-    uri: wcString
-
+    uri: wcString,
+    clientMeta: {
+      description: 'Crypto Wallet',
+      url: 'https://nftwallet.com',
+      icons: [CealLogo],
+      name: 'NFT Wallet',
+    },
   })
   return wcSession
 }
 
+//registerWalletConnectListeners(_wcSession,wallet,navigation, onWcDisconnect)
 export const registerWalletConnectListeners = async (
   walletConnectItem: CustomWalletConnect,
-  onDisconnectCallback: (walletConnectItem: CustomWalletConnect) => void,
-//   onWcTimestampUpdate: (walletConnectItem: CustomWalletConnect) => void,
-  
+  wallet:Wallet , navigation:any,
+  onDisconnectCallback: (walletConnectItem: CustomWalletConnect) => void
 ) => {
+
   try {
     walletConnectItem.on(SESSION_REQUEST_EVENT, (error: any, payload: any) => {
-        console.log('here')
-      walletConnectItem.updateTimestamp()
-    
-
+      
       if (error) {
         Alert.alert(FAIL, error.toString())
         throw error
       }
-      Alert.alert('Session request event')  
+      navigation.dispatch(
+        StackActions.push(WC_SCREEN, {
+          payload,
+          eventType: SESSION_REQUEST_EVENT,
+          wcSession: walletConnectItem,
+          address: wallet.address
+        }),
+      )
 
-      console.log(payload)
-    //   navigation.dispatch(
-    //     StackActions.push(Screens.WalletConnectEvents, {
-    //       payload,
-    //       eventType: SESSION_REQUEST_EVENT,
-    //       wcSession: walletConnectItem,
-    //     }),
-    //   )
-    })
-
-    walletConnectItem.on(SESSION_UPDATE_EVENT, (error: any) => {
-      walletConnectItem.updateTimestamp()
-    //   onWcTimestampUpdate(walletConnectItem)
-    console.log(error)
-      if (error) {
-        Alert.alert(FAIL, error.toString())
-        throw error
-      }
 
 
     })
+
+
 
     walletConnectItem.on(CALL_REQUEST, (error: any, payload: any) => {
-      walletConnectItem.updateTimestamp()
-    //   onWcTimestampUpdate(walletConnectItem)
-
+      // walletConnectItem.updateTimestamp()
+      // onWcTimestampUpdate(walletConnectItem)
+      console.log('call request')
       if (error) {
         Alert.alert(FAIL, error.toString())
         throw error
       }
-      console.log(payload)
-    //   navigation.dispatch(
-    //     StackActions.push(Screens.WalletConnectEvents, {
-    //       payload,
-    //       eventType: CALL_REQUEST,
-    //       wcSession: walletConnectItem,
-    //     }),
-    //   )
+      navigation.dispatch(
+        StackActions.push('WalletConnectEvents', {
+          payload,
+          eventType: CALL_REQUEST,
+          wcSession: walletConnectItem,
+          address: wallet.address
+        }),
+      )
     })
 
-    walletConnectItem.approveSession({
-        accounts: [                 // required
-          'Test',
-   
-   
-        ],
-        chainId: 4                  // required
-      })
   
 
-
-
-
-
-
-    walletConnectItem.on(DISCONNECT, async (error: any) => {
-      walletConnectItem.updateTimestamp()
-    //   onWcTimestampUpdate(walletConnectItem)
-    
+    walletConnectItem.on(DISCONNECT,async (error:any, payload:any) => {
+      console.log('disconnect request')
       if (error) {
         throw error
       }
@@ -147,7 +128,21 @@ export const registerWalletConnectListeners = async (
       }
       onDisconnectCallback && onDisconnectCallback(walletConnectItem)
     })
+
+    // walletConnectItem.approveSession({
+    //   accounts: [                 // required
+    //     '0x4292...931B3',
+
+    //   ],
+    //   chainId: 4                 // required
+    // })
+
+    // walletConnectItem.rejectSession({
+    //   message: 'OPTIONAL_ERROR_MESSAGE'       // optional
+    // })
+
   } catch (e) {
     onDisconnectCallback && onDisconnectCallback(walletConnectItem)
   }
 }
+

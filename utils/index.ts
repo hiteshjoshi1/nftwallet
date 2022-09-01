@@ -22,6 +22,8 @@ export const calculateDate = (date: Date): string => {
   return `${dd}/${mm}/${yyyy}`
 }
 
+
+
 export const formatDateTime = (date: Date): string => {
   return dayjs(date).format('DD/MM/YYYY hh:mm A')
 }
