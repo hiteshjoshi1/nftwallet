@@ -7,6 +7,7 @@ import WebviewCrypto from 'react-native-webview-crypto'
 import { CustomWalletConnect } from './utils/walletconnect';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppScreens } from './navigation/AppScreens';
+import { SafeAreaView, StyleSheet } from 'react-native';
 
 
 
@@ -23,13 +24,20 @@ const App =  () => {
     <WalletConnectContext.Provider value={value}>
       <WebviewCrypto />
       <NavigationContainer>
+      <SafeAreaView style={styles.container}>
         <AppScreens></AppScreens>
-        
+        </SafeAreaView>
       </NavigationContainer>
     </WalletConnectContext.Provider>
 
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  }
+});
 
 
 

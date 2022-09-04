@@ -6,6 +6,7 @@ export const SESSION_REQUEST_EVENT = 'session_request';
 
 export const SUCCESS = 'Success'
 export const REJECT = 'Reject'
+export const APPROVE = 'Approve'
 export const HOME_SCREEN="Home"
 export const CONTACT_SCREEN="Contact"
 export const SCAN_SCREEN="Scan"

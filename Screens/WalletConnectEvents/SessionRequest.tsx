@@ -37,7 +37,12 @@ export const SessionRequest: FC<Props> = ({
   return (
     <View >
       <View>
-        <Text>{payload.params?.[0].peerMeta.name}</Text>
+      <Text style={{
+                      textAlign: "center",
+                      color: "black",
+                      fontWeight: "bold",
+                      padding:10 
+                    }}>{payload.params?.[0].peerMeta.name} is requesting a connection</Text>
         <View>
           <Image
             source={payload.params?.[0].peerMeta.icons?.[0] || CealLogo}
@@ -45,7 +50,6 @@ export const SessionRequest: FC<Props> = ({
             resizeMode="contain"
           />
         </View>
-        <Text>is requesting a connection</Text>
       </View>
       <View
       >
@@ -53,43 +57,37 @@ export const SessionRequest: FC<Props> = ({
           <View/>
         </View>
         <Text>
-          Check that this matches with the website you are connecting
+          Check that the link below matches with the website you are connecting
         </Text>
         <View>
           {/* <Image source={LockImage} /> */}
-          <Text  numberOfLines={1}>
+          <Text style={{
+                      textAlign: "center",
+                      color: "black",
+                      fontWeight: "bold",
+                      padding:10 
+                    }} numberOfLines={1}>
             {payload.params?.[0].peerMeta.url || ''}
           </Text>
         </View>
         <Text>
-          Date
+          Date : {date}
         </Text>
+   
         <Text
         >
-          {date}
+          Time: {time}
         </Text>
-        <Text
-        >
-          Time
-        </Text>
-        <Text
-        >
-          {time}
-        </Text>
+   
 
-        <View>
-          {/* <TouchableOpacity
-            onPress={rejectSession}>
-            <Text>Cancel</Text>
-          </TouchableOpacity> */}
-            <AppButton title="Cancel" onPress={rejectSession}/>
+         <View style={{alignItems: 'center', justifyContent: 'center', padding:10 }}>
+            <AppButton title="Connect" onPress={approveSession}/>   
+            
 
           <View/>
-          {/* <TouchableOpacity
-            onPress={approveSession}>
-            <Text>Connect</Text>
-          </TouchableOpacity> */}
-         <AppButton title="Connect" onPress={approveSession}/>   
+          <View style={{alignItems: 'center', justifyContent: 'center', padding:10 }}>
+          <AppButton title="Cancel" onPress={rejectSession}/>
+         </View>
 
         </View>
       </View>

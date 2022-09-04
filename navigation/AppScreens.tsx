@@ -12,7 +12,7 @@ import { HomeStackScreen } from "../Screens/Stacks/HomeStack";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import "react-native-get-random-values"
 import "@ethersproject/shims"
-import { Wallet } from 'ethers';
+import { Wallet, providers } from 'ethers';
 import { EtherWalletProvider } from '../context/Etherwallet';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
@@ -27,13 +27,21 @@ export const AppScreens = () => {
   useEffect(() => {
     const getWallet = async () => {
       const mnemonic = await AsyncStorage.getItem('@mnemonic')
+      const infuraProjectId = '1f59e51c65114fb68e791ba51f6b729a'
+      const provider = new providers.InfuraProvider("rinkeby",infuraProjectId )
+      const blockNum = await provider.getBlockNumber()
+      
       if (mnemonic) {
-        setWallet(Wallet.fromMnemonic(mnemonic))
+        //setWallet(Wallet.fromMnemonic(mnemonic))
+        const wallet = Wallet.fromMnemonic(mnemonic)
+        const walletWithProvider = wallet.connect(provider)
+        setWallet(walletWithProvider)
       }
       else {
         const newWallet = Wallet.createRandom()
-        await AsyncStorage.setItem('@mnemonic', newWallet.mnemonic.phrase)
-        setWallet(newWallet)
+        const walletWithProvider = newWallet.connect(provider)
+        await AsyncStorage.setItem('@mnemonic', walletWithProvider.mnemonic.phrase)
+        setWallet(walletWithProvider)
       }
 
     };

@@ -67,7 +67,6 @@ export const createNewWcConnector = (wcString: string): CustomWalletConnect => {
   return wcSession
 }
 
-//registerWalletConnectListeners(_wcSession,wallet,navigation, onWcDisconnect)
 export const registerWalletConnectListeners = async (
   walletConnectItem: CustomWalletConnect,
   wallet:Wallet , navigation:any,
@@ -76,7 +75,7 @@ export const registerWalletConnectListeners = async (
 
   try {
     walletConnectItem.on(SESSION_REQUEST_EVENT, (error: any, payload: any) => {
-      
+      console.log(' ----Session request event-----')
       if (error) {
         Alert.alert(FAIL, error.toString())
         throw error
@@ -89,17 +88,11 @@ export const registerWalletConnectListeners = async (
           address: wallet.address
         }),
       )
-
-
-
     })
 
-
-
     walletConnectItem.on(CALL_REQUEST, (error: any, payload: any) => {
-      // walletConnectItem.updateTimestamp()
-      // onWcTimestampUpdate(walletConnectItem)
-      console.log('call request')
+    
+      console.log(' ---- Call event-----')
       if (error) {
         Alert.alert(FAIL, error.toString())
         throw error
@@ -117,7 +110,7 @@ export const registerWalletConnectListeners = async (
   
 
     walletConnectItem.on(DISCONNECT,async (error:any, payload:any) => {
-      console.log('disconnect request')
+      console.log('disconnect event')
       if (error) {
         throw error
       }
@@ -128,18 +121,6 @@ export const registerWalletConnectListeners = async (
       }
       onDisconnectCallback && onDisconnectCallback(walletConnectItem)
     })
-
-    // walletConnectItem.approveSession({
-    //   accounts: [                 // required
-    //     '0x4292...931B3',
-
-    //   ],
-    //   chainId: 4                 // required
-    // })
-
-    // walletConnectItem.rejectSession({
-    //   message: 'OPTIONAL_ERROR_MESSAGE'       // optional
-    // })
 
   } catch (e) {
     onDisconnectCallback && onDisconnectCallback(walletConnectItem)

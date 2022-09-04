@@ -10,9 +10,13 @@ import dayjs from 'dayjs'
 
 import type WalletConnect from '@walletconnect/client'
 import { WalletConnectContext } from '../../utils'
-import { HOME_SCREEN, LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT } from '../../constants'
+import { CALL_REQUEST, HOME_SCREEN, LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT } from '../../constants'
 import { Wallet } from 'ethers'
 import { SessionRequest } from './SessionRequest'
+import { CallRequest } from './CallRequest'
+
+import EthereWalletContext from '../../context/Etherwallet'
+
 
 type Props = {
     route: {
@@ -29,6 +33,7 @@ type Props = {
 
 const WalletConnectEvents  = ({route}:any) => {
   const navigation = useNavigation()
+  const wallet = useContext<Wallet>(EthereWalletContext)
   const { walletConnectList, setWalletConnectList } = useContext(WalletConnectContext)
   
   const { eventType, payload, address } = route.params
@@ -86,13 +91,31 @@ const WalletConnectEvents  = ({route}:any) => {
     goBack()
   }
 
-  const approveCallRequest = (payload: any) => {
-    wcSession.approveRequest({
-      id: payload.id,
-      result: '',
-    })
-    goBack()
+  const approveCallRequest = async (payload: any) => {
+      const txHash = await sendTransaction(payload)
+      wcSession.approveRequest({
+        id: payload.id,
+        result: txHash,
+      })
+      goBack()
   }
+
+  const sendTransaction = async (payload:any) => {
+    const {from,to, data, value} = payload?.params[0]
+    let transactionParams = {
+        from: from,
+        to:to,
+        value:value,
+        data:data
+      }
+      
+      const submittedTransaction = await wallet.sendTransaction(transactionParams)
+      const transaction =  await submittedTransaction.wait()
+      console.log(transaction)
+      console.log('https://rinkeby.etherscan.io/tx/'+transaction.transactionHash)
+      console.log('1 ---',transaction.transactionHash)
+      return transaction.transactionHash;
+}
 
   const rejectCallRequest = (payload: any) => {
     wcSession.rejectRequest({
@@ -115,7 +138,7 @@ const WalletConnectEvents  = ({route}:any) => {
           rejectSession={rejectSession}
         />
       )}
-      {/* {eventType === CALL_REQUEST && (
+      {eventType === CALL_REQUEST && (
         <CallRequest
           date={date}
           time={time}
@@ -123,7 +146,7 @@ const WalletConnectEvents  = ({route}:any) => {
           approveCallRequest={approveCallRequest}
           rejectCallRequest={rejectCallRequest}
         />
-      )} */}
+      )}
     </View>
   )
 }
