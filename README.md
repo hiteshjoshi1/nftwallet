@@ -1,4 +1,4 @@
-WalletConnect with React-native 0.69 and typescript
+# WalletConnect with React-native 0.69, Typescript, Etherjs
 
 This is a generic wallet build on top of WalletConnect and Etherjs
 It has nothing specific to NFT. But NFT would be the first use case.

@@ -8,6 +8,7 @@ import { CustomWalletConnect } from './utils/walletconnect';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppScreens } from './navigation/AppScreens';
 import { SafeAreaView, StyleSheet } from 'react-native';
+import { ToastProvider } from 'react-native-toast-notifications';
 
 
 
@@ -23,11 +24,13 @@ const App =  () => {
     
     <WalletConnectContext.Provider value={value}>
       <WebviewCrypto />
-      <NavigationContainer>
+     <NavigationContainer>
       <SafeAreaView style={styles.container}>
         <AppScreens></AppScreens>
         </SafeAreaView>
       </NavigationContainer>
+
+     
     </WalletConnectContext.Provider>
 
   );
