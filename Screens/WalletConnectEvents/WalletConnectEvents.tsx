@@ -5,13 +5,14 @@ import { StackActions, useNavigation } from '@react-navigation/native'
 import dayjs from 'dayjs'
 import type WalletConnect from '@walletconnect/client'
 import { WalletConnectContext } from '../../utils'
-import { CALL_REQUEST, HOME_SCREEN, LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT } from '../../constants'
+import { CALL_REQUEST, HOME_SCREEN, LOG_BOX_LOGS, REJECT, SESSION_REQUEST_EVENT, ETH_METHODS } from '../../constants'
 import { Wallet } from 'ethers'
 import { SessionRequest } from './SessionRequest'
 import { CallRequest } from './CallRequest'
 
 import EthereWalletContext from '../../context/Etherwallet'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { arrayify } from 'ethers/lib/utils'
 
 
 type Props = {
@@ -91,30 +92,62 @@ const WalletConnectEvents = ({ route }: any) => {
   }
 
   const approveCallRequest = async (payload: any) => {
-    const txHash = await sendTransaction(payload)
+    const txHash = await handleAllTransactions(payload)
     wcSession.approveRequest({
       id: payload.id,
       result: txHash,
+      jsonrpc: payload.jsonrpc
     })
     goBack()
   }
 
-  const sendTransaction = async (payload: any) => {
-    const { from, to, data, value } = payload?.params[0]
-    let transactionParams = {
-      from: from,
-      to: to,
-      value: value,
-      data: data
-    }
-    const submittedTransaction = await wallet.sendTransaction(transactionParams)
-    settxInProgress(true)
-    const transaction = await submittedTransaction.wait()
-    console.log(transaction)
-    settxInProgress(false)
-    console.log('https://rinkeby.etherscan.io/tx/' + transaction.transactionHash)
 
-    return transaction.transactionHash;
+
+
+  const handleAllTransactions = async (payload: any) => {
+    console.log('call request', payload)
+
+    switch (payload.method) {
+      case ETH_METHODS.ETH_SEND_TRANSACTION:
+        const { from, to, data, value } = payload?.params[0]
+        let transactionParams = {
+          from: from,
+          to: to,
+          value: value,
+          data: data
+        }
+        const submittedTransaction = await wallet.sendTransaction(transactionParams)
+        settxInProgress(true)
+        const transaction = await submittedTransaction.wait()
+        console.log(transaction)
+        settxInProgress(false)
+        console.log('https://rinkeby.etherscan.io/tx/' + transaction.transactionHash)
+        return transaction.transactionHash;
+
+      case ETH_METHODS.ETH_SIGN:
+        console.log('Eth sign')
+        break;
+
+      case ETH_METHODS.PERSONAL_SIGN:
+        const dataToSign = payload?.params[0]
+        const accountToSign = payload?.params[1]
+        const arrayfied = arrayify(dataToSign)
+        const signature = await wallet.signMessage(arrayfied)
+        return signature;
+
+      case ETH_METHODS.ETH_SIGN_TRANSACTION:
+        console.log('Eth sign transaction')
+        break;
+
+      case ETH_METHODS.ETH_SEND_RAW_TRANSACTION:
+        console.log('Eth send raw transaction')
+        break;
+
+      default:
+        console.log('default transaction')
+        break;
+    }
+
   }
 
   const rejectCallRequest = (payload: any) => {
@@ -130,7 +163,7 @@ const WalletConnectEvents = ({ route }: any) => {
   return (
     <View>
 
-   
+
       {eventType === SESSION_REQUEST_EVENT && (
         <SessionRequest
           date={date}
@@ -151,7 +184,7 @@ const WalletConnectEvents = ({ route }: any) => {
           rejectCallRequest={rejectCallRequest}
         />
       )}
-         {txInProgress && (
+      {txInProgress && (
         <LoadingScreen message="Transaction is being processed" loaderSize={'large'}></LoadingScreen>
       )}
     </View>

@@ -1,12 +1,9 @@
 import React, { FC, useContext } from 'react'
-import { Dimensions, Image, LogBox, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { APPROVE, LOG_BOX_LOGS, REJECT } from '../../constants'
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen'
+import {  LogBox, StyleSheet, Text, View } from 'react-native'
+import { LOG_BOX_LOGS } from '../../constants'
+
 import { AppButton } from '../components/AppButton'
-import { CealLogo } from '../../assets/images'
+
 
 
 
@@ -39,18 +36,18 @@ export const CallRequest: FC<Props> = ({
   rejectCallRequest,
 }) => {
 
-  console.log('Payoad in call', payload)
 
   const params = payload.params
-
+// fix the screens for different method types
   return (
     <View>
-        <Text> Transaction details </Text>
+        <Text style = {[styles.largeText, styles.simpleText]}> Call request details </Text>
         <View>
-              <Text> Method type : {params[0].method} </Text>
-              <Text> From : {params[0].from} </Text>
-              <Text> To : {params[0].to} </Text>
-              <Text> Value : {params[0].value} </Text>
+        <Text style = {[styles.mediumText, styles.simpleText]}> Method type : {params[0].method} </Text>
+
+         <Text style = {[styles.mediumText, styles.simpleText]}>From : {params[0].from} </Text>
+         <Text style = {[styles.mediumText, styles.simpleText]}>To : {params[0].to} </Text>
+         <Text style = {[styles.mediumText, styles.simpleText]}>Value : {params[0].value} </Text>
         </View>
 
       <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
@@ -64,4 +61,21 @@ export const CallRequest: FC<Props> = ({
   )
 }
 
+const styles = StyleSheet.create({
+  simpleText: {
+    textAlign: "center",
+    color: "black",
+    fontWeight: "bold",
+    padding: 10
+  },
+  largeText: {
+    fontSize: 20
+  },
+  smallText: {
+    fontSize: 10
+  },
+  mediumText: {
+    fontSize: 15
+  }
 
+})
