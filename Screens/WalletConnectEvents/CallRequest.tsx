@@ -1,6 +1,7 @@
+import { utils } from 'ethers'
 import React, { FC, useContext } from 'react'
 import {  LogBox, StyleSheet, Text, View } from 'react-native'
-import { LOG_BOX_LOGS } from '../../constants'
+import { ETH_METHODS, LOG_BOX_LOGS } from '../../constants'
 
 import { AppButton } from '../components/AppButton'
 
@@ -38,27 +39,113 @@ export const CallRequest: FC<Props> = ({
 
 
   const params = payload.params
-// fix the screens for different method types
-  return (
-    <View>
-        <Text style = {[styles.largeText, styles.simpleText]}> Call request details </Text>
-        <View>
-        <Text style = {[styles.mediumText, styles.simpleText]}> Method type : {params[0].method} </Text>
+  console.log('payload', payload)
 
-         <Text style = {[styles.mediumText, styles.simpleText]}>From : {params[0].from} </Text>
-         <Text style = {[styles.mediumText, styles.simpleText]}>To : {params[0].to} </Text>
-         <Text style = {[styles.mediumText, styles.simpleText]}>Value : {params[0].value} </Text>
+  switch (payload.method) {
+    case ETH_METHODS.ETH_SEND_TRANSACTION:
+        const { from, to, data, value } = payload?.params[0]
+
+        const valueInEth = utils.formatEther(value);
+        
+        // const t2 = utils.toUtf8String(value)
+        return (
+          <View>
+          <Text style = {[styles.largeText, styles.simpleText]}> Request details </Text>
+          <View>
+            <View>
+          <Text style = {[styles.mediumText, styles.simpleText]}> Method type : {payload.method} </Text>
+          </View>
+          <View>
+          <Text style = {[styles.mediumText, styles.simpleText]}>From : {from} </Text>
+          </View>
+           <View>
+           <Text style = {[styles.mediumText, styles.simpleText]}>To : {to} </Text>
+           </View>
+           <View>
+           <Text style = {[styles.mediumText, styles.simpleText]}>Value : {valueInEth} Eth </Text>
+           </View>
+           
+          </View>
+  
+        <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
+          </View>
         </View>
+      </View >
+        )
 
-      <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+      case ETH_METHODS.ETH_SIGN:
+        console.log('Eth_Sign')
+        return (
+        <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
         <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
         <View />
         <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
           <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
         </View>
       </View>
-    </View >
-  )
+        )
+
+      case ETH_METHODS.PERSONAL_SIGN:
+        const dataToSign = payload?.params[0]
+        const messageClearText = utils.toUtf8String(dataToSign);
+        console.log(messageClearText)
+        return (
+          <View>
+            <Text style = {[styles.largeText, styles.simpleText]}> Sign a challenge</Text>
+            <Text style = {[styles.mediumText, styles.simpleText]}>Data to Sign</Text>
+            <Text style = {[styles.smallText, styles.simpleText]}> {messageClearText} </Text>
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
+          </View>
+        </View>
+        </View>
+          )
+    
+
+      case ETH_METHODS.ETH_SIGN_TRANSACTION:
+        console.log('Eth sign transaction')
+        return (
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
+          </View>
+        </View>
+        )
+
+      case ETH_METHODS.ETH_SEND_RAW_TRANSACTION:
+        console.log('Eth send raw transaction')
+        return (
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
+          </View>
+        </View>
+        )
+
+      default:
+        console.log('default transaction')
+        return (
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={() => approveCallRequest(payload)} />
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={() => rejectCallRequest(payload)} />
+          </View>
+        </View>
+        )
+    }
+
 }
 
 const styles = StyleSheet.create({
