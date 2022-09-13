@@ -1,6 +1,6 @@
 import { Wallet } from "ethers";
 import React, { useContext } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SCAN_SCREEN } from "../constants";
 import EthereWalletContext from "../context/Etherwallet";
 import { AppButton } from "./components/AppButton";
@@ -15,28 +15,42 @@ export const HomeScreen = ({ navigation }: any) => {
   const wallet = useContext<Wallet>(EthereWalletContext)
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ padding: 10 }}>Your Ethereum Wallet Address</Text>
+      <Text style={[{
+        padding: 15,
+        fontSize: 30
+      },style.baseText]}>Welcome to crypto wallet demo</Text>
+      <View>
+      <Text style={[{
+        padding: 15
+      },style.baseText]}>Your Ethereum Wallet Address</Text>
+      </View>
 
-
-
-      <Text style={{
-        textAlign: "center",
-        color: "black",
+      <View>
+      <Text style={[{
         fontWeight: "bold",
-        
-      }}
+      },style.baseText]}
       >{wallet.address}</Text>
+      </View>
 
 
+      <View>
       <TouchableOpacity onPress={()=> copyToClipboard(wallet.address)}>
-          <Text style= {{padding: 10}}>Click here to copy to Clipboard</Text>
+      <Text style={style.baseText}>Click to copy address to clipboard</Text>
         </TouchableOpacity>
-
-      <AppButton title="Click to scan QR" onPress={() => navigation.navigate(SCAN_SCREEN)} />
+        </View>
+        <View style={{padding:10 }}>
+        <AppButton title="Click to scan QR" onPress={() => navigation.navigate(SCAN_SCREEN)} />
+        </View>
+      
     </View>
   );
 
 }
 
-
+const style = StyleSheet.create({
+  baseText : {
+    textAlign: "center",
+    color: "black"
+  }
+})
 

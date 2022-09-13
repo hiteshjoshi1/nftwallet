@@ -15,6 +15,7 @@ import "@ethersproject/shims"
 import { Wallet, providers } from 'ethers';
 import { EtherWalletProvider } from '../context/Etherwallet';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { LoadingScreen } from '../Screens/components/LoadingScreen';
 
 
 
@@ -49,20 +50,13 @@ export const AppScreens = () => {
   }, []);
 
   if (!wallet) {
-    return (
-      <View style={[styles.container, styles.horizontal]}>
-        <Text>Loading wallet...</Text>
-        <ActivityIndicator size="large" color="#00ff00" />
-      </View>
-    )
-
+    return (<LoadingScreen message="Loading wallet..." loaderSize='large'/>)
   }
   return (
     <EtherWalletProvider value={wallet}>
       <Tab.Navigator>
         <Tab.Screen name="HomeStack" component={HomeStackScreen} options={{ headerShown: false }} />
         <Tab.Screen name="About" component={AboutScreen} />
-
       </Tab.Navigator>
     </EtherWalletProvider>
   );
@@ -75,11 +69,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     
   },
-  horizontal: {
-    flexDirection: "row",
-    // justifyContent: "space-around",
-    // padding: 10
-  }
+
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+ }
+
 });
 
 

@@ -14,3 +14,11 @@ export const WC_SCREEN="WCScreen"
 export const LOG_BOX_LOGS="Non-serializable values were found in the navigation state"
 
 
+export enum ETH_METHODS {
+    PERSONAL_SIGN = "personal_sign",
+    ETH_SIGN = "eth_sign",
+    ETH_SIGN_TYPE_DATA = "eth_signTypedData",
+    ETH_SEND_TRANSACTION = "eth_sendTransaction",
+    ETH_SIGN_TRANSACTION = "eth_signTransaction",
+    ETH_SEND_RAW_TRANSACTION = "eth_sendRawTransaction"
+  }

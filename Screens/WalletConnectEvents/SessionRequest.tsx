@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { LogBox, Text, TouchableOpacity, View, Image } from 'react-native'
-import { CealLogo } from '../../assets/images'
+import { Text, View, Image, StyleSheet } from 'react-native'
+
 import { AppButton } from '../components/AppButton'
 
 
@@ -37,60 +37,73 @@ export const SessionRequest: FC<Props> = ({
   return (
     <View >
       <View>
-      <Text style={{
-                      textAlign: "center",
-                      color: "black",
-                      fontWeight: "bold",
-                      padding:10 
-                    }}>{payload.params?.[0].peerMeta.name} is requesting a connection</Text>
-        <View>
-          <Image
-            source={payload.params?.[0].peerMeta.icons?.[0] || CealLogo}
-            
-            resizeMode="contain"
+        <View style={styles.container}>
+          <Image style={styles.tinyLogo}
+            source={{ uri: payload.params?.[0].peerMeta.icons?.[0] }}
           />
         </View>
       </View>
-      <View
-      >
+
         <View>
-          <View/>
-        </View>
-        <Text>
-          Check that the link below matches with the website you are connecting
-        </Text>
-        <View>
-          {/* <Image source={LockImage} /> */}
-          <Text style={{
-                      textAlign: "center",
-                      color: "black",
-                      fontWeight: "bold",
-                      padding:10 
-                    }} numberOfLines={1}>
+          <Text style={[styles.largeText, styles.simpleText]}>
             {payload.params?.[0].peerMeta.url || ''}
           </Text>
+          <Text style={styles.simpleText}>
+            Wants to connect
+          </Text>
+          <Text style={styles.simpleText}>
+            Check that the link above matches with the website you are connecting
+          </Text>
         </View>
-        <Text>
-          Date : {date}
-        </Text>
-   
-        <Text
-        >
-          Time: {time}
-        </Text>
-   
 
-         <View style={{alignItems: 'center', justifyContent: 'center', padding:10 }}>
-            <AppButton title="Connect" onPress={approveSession}/>   
-            
+        <View>
+        <Text style={[styles.largeText, styles.simpleText]}>
+          Connect to this site?
+        </Text>
+        <Text style={[styles.smallText, styles.simpleText]}>
+          By clicking connect, you allow this dapp to view your public address.
+          This is an important security step to protect your data from poetential security risks.
+        </Text>
 
-          <View/>
-          <View style={{alignItems: 'center', justifyContent: 'center', padding:10 }}>
-          <AppButton title="Cancel" onPress={rejectSession}/>
-         </View>
+
+        <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+          <AppButton title="Connect" onPress={approveSession} />
+
+          <View />
+          <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <AppButton title="Cancel" onPress={rejectSession} />
+          </View>
 
         </View>
       </View>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  simpleText: {
+    textAlign: "center",
+    color: "black",
+    fontWeight: "bold",
+    padding: 10
+  },
+  largeText: {
+    fontSize: 20
+  },
+  smallText: {
+    fontSize: 10
+  },
+  mediumText: {
+    fontSize: 15
+  },
+  tinyLogo: {
+    align: "center",
+    height: 50,
+    width: 50
+  },
+  container: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+})

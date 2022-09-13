@@ -1,7 +1,5 @@
 import React from "react";
-import { GestureResponderEvent, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { LinearGradient } from "react-native-svg";
-
+import {  StyleSheet, Text, TouchableOpacity } from "react-native";
 
 interface params {
     onPress: any;

@@ -1,6 +1,8 @@
-WalletConnect with React-native 0.69 and typescript
+# WalletConnect with React-native 0.69, Typescript, Etherjs - WIP
+
 
 This is a generic wallet build on top of WalletConnect and Etherjs
+
 It has nothing specific to NFT. But NFT would be the first use case.
 
 
@@ -52,3 +54,7 @@ This should be fixed in Ethers version 6. See [here](https://github.com/ethers-i
 
 
 # To fix
+- chain Id is hardcoded to rinkeby
+- Only one wallet is generated
+- wc session is in memory and is not stored 
+- // fix the screens for different method types in CallRequest.tsx
